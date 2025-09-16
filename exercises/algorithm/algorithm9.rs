@@ -2,7 +2,6 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -37,7 +36,9 @@ where
     }
 
     pub fn add(&mut self, value: T) {
-        //TODO
+        self.count += 1;
+        self.items.push(value);
+        self.heapify_up(self.count);
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -57,8 +58,40 @@ where
     }
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
-        //TODO
-		0
+        let left = self.left_child_idx(idx);
+        let right = self.right_child_idx(idx);
+        
+        if right > self.count {
+            left
+        } else if (self.comparator)(&self.items[left], &self.items[right]) {
+            left
+        } else {
+            right
+        }
+    }
+
+    fn heapify_up(&mut self, idx: usize) {
+        if idx == 1 {
+            return;
+        }
+        
+        let parent = self.parent_idx(idx);
+        if (self.comparator)(&self.items[idx], &self.items[parent]) {
+            self.items.swap(idx, parent);
+            self.heapify_up(parent);
+        }
+    }
+
+    fn heapify_down(&mut self, idx: usize) {
+        if !self.children_present(idx) {
+            return;
+        }
+        
+        let smallest_child = self.smallest_child_idx(idx);
+        if (self.comparator)(&self.items[smallest_child], &self.items[idx]) {
+            self.items.swap(idx, smallest_child);
+            self.heapify_down(smallest_child);
+        }
     }
 }
 
@@ -84,8 +117,22 @@ where
     type Item = T;
 
     fn next(&mut self) -> Option<T> {
-        //TODO
-		None
+        if self.count == 0 {
+            return None;
+        }
+        
+        if self.count == 1 {
+            self.count = 0;
+            return Some(self.items.pop().unwrap());
+        }
+        
+        let last_item = self.items.pop().unwrap();
+        let root = std::mem::replace(&mut self.items[1], last_item);
+        self.count -= 1;
+        
+        self.heapify_down(1);
+        
+        Some(root)
     }
 }
 
