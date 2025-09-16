@@ -1,7 +1,13 @@
 [package]
-name = "tests8"
+name = "tests"
 version = "0.0.1"
 edition = "2021"
 [[bin]]
+name = "tests7"
+path = "tests7.rs"
+[[bin]]
 name = "tests8"
 path = "tests8.rs"
+[[bin]]
+name = "tests9"
+path = "tests9.rs"
